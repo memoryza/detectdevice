@@ -34,10 +34,14 @@ $(function() {
     $('#osInfo').html(osInfo);
     var browserInfo = '未知';
     if($.browser.webkit) {
-        if($.browser.safari) {
+        if($.browser.uc){
+            osInfo = 'U3内核(uc浏览器),版本:' + $.browser.version;
+        } else if($.browser.qq) {
+            osInfo = 'webkit内核(qq),版本:' + $.browser.version;
+        } else if($.browser.safari) {
             osInfo = 'webkit内核(safari),版本:' + $.browser.version;
         } else if($.browser.chrome) {
-             osInfo = 'webkit内核(chrome),版本:' + $.browser.version;
+            osInfo = 'webkit内核(chrome),版本:' + $.browser.version;
         } else {
             osInfo = 'webkit内核,版本:' + $.browser.version;
         }

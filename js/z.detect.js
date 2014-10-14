@@ -4,24 +4,28 @@
           webkit = ua.match(/Web[kK]it[\/]{0,1}([\d.]+)/),
           android = ua.match(/(Android);?[\s\/]+([\d.]+)?/),
           osx = !!ua.match(/\(Macintosh\; Intel /),
-          ipad = ua.match(/(iPad).*OS\s([\d_]+)/),
-          ipod = ua.match(/(iPod)(.*OS\s([\d_]+))?/),
-          iphone = !ipad && ua.match(/(iPhone\sOS)\s([\d_]+)/),
           webos = ua.match(/(webOS|hpwOS)[\s\/]([\d.]+)/),
           wp = ua.match(/Windows Phone ([\d.]+)/),
-          touchpad = webos && ua.match(/TouchPad/),
           kindle = ua.match(/Kindle\/([\d.]+)|Silk\/([\d._]+)/),
-          silk = ua.match(/Silk\/([\d._]+)/),
           blackberry = ua.match(/(BlackBerry).*Version\/([\d.]+)/),
           bb10 = ua.match(/(BB10).*Version\/([\d.]+)/),
           rimtabletos = ua.match(/(RIM\sTablet\sOS)\s([\d.]+)/),
           playbook = ua.match(/PlayBook/),
+          symbian = ua.match(/SymbianOS\/([\d.]+)/),
+
+          ipad = ua.match(/(iPad).*OS\s([\d_]+)/),
+          ipod = ua.match(/(iPod)(.*OS\s([\d_]+))?/),
+          iphone = !ipad && ua.match(/(iPhone\sOS)\s([\d_]+)/),
+          touchpad = webos && ua.match(/TouchPad/),
+          silk = ua.match(/Silk\/([\d._]+)/),
           chrome = ua.match(/Chrome\/([\d.]+)/) || ua.match(/CriOS\/([\d.]+)/),
           firefox = ua.match(/Firefox\/([\d.]+)/),
           ie = ua.match(/MSIE\s([\d.]+)/) || ua.match(/Trident\/[\d](?=[^\?]+).*rv:([0-9.].)/),
           webview = !chrome && ua.match(/(iPhone|iPod|iPad).*AppleWebKit(?!.*Safari)/),
-          safari = webview || ua.match(/Version\/([\d.]+)([^S](Safari)|[^M]*(Mobile)[^S]*(Safari))/)
-          symbian = ua.match(/SymbianOS\/([\d.]+)/);
+          safari = webview || ua.match(/Version\/([\d.]+)([^S](Safari)|[^M]*(Mobile)[^S]*(Safari))/),
+          uc = ua.match(/UCBrowser\/([\d.]+)/i),
+          qq = ua.match(/QQBrowser\/([\d.]+)/i)
+
         // Todo: clean this up with a better OS/browser seperation:
         // - discern (more) between multiple browsers on android
         // - decide if kindle fire in silk mode is android or not
@@ -40,7 +44,7 @@
         if (blackberry) os.blackberry = true, os.version = blackberry[2]
         if (bb10) os.bb10 = true, os.version = bb10[2]
         if (rimtabletos) os.rimtabletos = true, os.version = rimtabletos[2]
-        if(symbian) os.symbian = true, os.version = symbian[1]
+        if (symbian) os.symbian = true, os.version = symbian[1]
 
         if (playbook) browser.playbook = true
         if (kindle) os.kindle = true, os.version = kindle[1] || kindle[2]
@@ -51,13 +55,14 @@
         if (ie) browser.ie = true, browser.version = ie[1]
         if (safari && (osx || os.ios)) {browser.safari = true; if (osx) browser.version = safari[1]}
         if (webview) browser.webview = true
-  
+        if (uc) browser.uc = true,browser.version = uc[1]
+        if (qq) browser.qq = true,browser.version = qq[1]
 
-        os.tablet = !!(ipad || playbook || kindle || os.symbian || (android && !ua.match(/Mobile/)) ||
+        os.tablet = !!(ipad || playbook || kindle  || (android && !ua.match(/Mobile/)) ||
           (firefox && ua.match(/Tablet/)) || (ie && !ua.match(/Phone/) && ua.match(/Touch/)))
         os.phone  = !!(!os.tablet && !os.ipod&& (android || iphone || webos || blackberry || bb10 ||
           (chrome && ua.match(/Android/)) || (chrome && ua.match(/CriOS\/([\d.]+)/)) ||
-          (firefox && ua.match(/Mobile/)) || (ie && ua.match(/Touch/))))
+          (firefox && ua.match(/Mobile/)) || (ie && ua.match(/Touch/)) || (uc && ua.match(/Mobile/)) ||　(qq && ua.match(/Mobile/))|| symbian))
       }
 
       detect.call($, navigator.userAgent)
@@ -70,9 +75,18 @@
              * @name $.support
              * - ***orientation*** 检测是否支持转屏事件，UC中存在orientaion，但转屏不会触发该事件，故UC属于不支持转屏事件(iOS 4上qq, chrome都有这个现象)
         */
-        var br  =  $.browser;
+        var isSupport = "orientation" in window && "onorientationchange" in window;
+        if($.browser.uc) {
+          isSupport = false;
+        } else if($.os.ios && parseFloat($.os.version) < 5) {
+          if($.browser.qq || $.browser.chrome) {
+            isSupport = false;
+          }
+        } else if($.os.android &&  parseFloat($.os.version) <= 3) {
+          isSupport = false;
+        }
         $.support = $.extend($.support || {}, {
-            orientation: !(br.uc || (parseFloat($.os.version) < 5 && (br.qq || br.chrome))) && !($.os.android && parseFloat($.os.version) > 3) && "orientation" in window && "onorientationchange" in window
+            orientation:  isSupport
         });
     })(Zepto);
     (function($) {
