@@ -82,7 +82,7 @@
         */
         function detectShell(ua) {
             var shell = this.shell = {},
-                weibo = ua.toLowerCase().match(/_weibo_/i),
+                weibo = ua.match(/_weibo_/i),
                 weixin = ua.match(/MicroMessenger/i);
             if(weibo) shell.weibo = true;
             if(weixin) shell.weixin = true;
