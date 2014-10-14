@@ -18,7 +18,7 @@ $(function() {
         } else if($.os.bb10){
             osInfo = '黑莓智能系统(bb10) ,版本:' + $.os.version +'<a href="http://baike.baidu.com/view/8500602.htm?fr=aladdin">详情</a>';
         } else if($.os.android) {
-            osInfo = 'android ,版本:' + $.os.version;
+            osInfo = 'android ,版本:' + ($.os.version ? $.os.version : '未知');
         } else if($.os.wp) {
             osInfo = 'wp系统 ,版本:' + $.os.version;
         } else if($.os.symbian) {
@@ -35,20 +35,22 @@ $(function() {
     var browserInfo = '未知';
     if($.browser.webkit) {
         if($.browser.uc){
-            osInfo = 'U3内核(uc浏览器),版本:' + $.browser.version;
+            browserInfo = 'U3内核(uc浏览器),版本:' + $.browser.version;
         } else if($.browser.qq) {
-            osInfo = 'webkit内核(qq),版本:' + $.browser.version;
+            browserInfo = 'webkit内核(qq),版本:' + $.browser.version;
         } else if($.browser.safari) {
-            osInfo = 'webkit内核(safari),版本:' + $.browser.version;
+            browserInfo = 'webkit内核(safari),版本:' + $.browser.version;
         } else if($.browser.chrome) {
-            osInfo = 'webkit内核(chrome),版本:' + $.browser.version;
+            browserInfo = 'webkit内核(chrome),版本:' + $.browser.version;
         } else {
-            osInfo = 'webkit内核,版本:' + $.browser.version;
+            browserInfo = 'webkit内核,版本:' + $.browser.version;
         }
     } else if($.browser.ie){
-        osInfo = 'Trident内核(ie),版本:' + $.browser.version;
+        browserInfo = 'Trident内核(ie),版本:' + $.browser.version;
+    } else if($.browser.firefox) {
+        browserInfo = 'Firefox,版本:' + $.browser.version;
     }
-    $('#browserInfo').html(osInfo);
+    $('#browserInfo').html(browserInfo);
 
     var shellInfo = '否';
     if($.shell.isShell) {
@@ -84,6 +86,9 @@ $(function() {
                 isPortrait = elem && elem.clientWidth / elem.clientHeight < 1.1;
             }
             $('#orientationStatus').text(isPortrait ? '竖屏': '横屏');
+
+            $('#innerHeight').text(window.innerHeight + '(innerHeight);' + $(window).height() +'(docheight)');
+            $('#innerWidth').text(window.innerWidth + '(innerWidth);' + $(window).width() +'(docWidth)');
         }
     }
     if(window.orientation !== undefined) {
