@@ -58,6 +58,8 @@ $(function() {
             shellInfo = '是(微博)';
         } else if($.shell.weixin) {
             shellInfo = '是(微信)';
+        } else if($.shell.qq) {
+            shellInfo = '是(QQ)';
         }
     }
     $('#shellInfo').text(shellInfo);

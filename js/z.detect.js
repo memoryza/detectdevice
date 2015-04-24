@@ -97,10 +97,12 @@
         function detectShell(ua) {
             var shell = this.shell = {},
                 weibo = ua.match(/_weibo_/i),
-                weixin = ua.match(/MicroMessenger/i);
+                weixin = ua.match(/MicroMessenger/i),
+                qq = ua.match(/QQ\/\d+\.\d+\./i);
             if(weibo) shell.weibo = true;
             if(weixin) shell.weixin = true;
-            shell.isShell = !!(weixin || weibo);
+            if(qq) shell.qq = true;
+            shell.isShell = !!(weixin || weibo || qq);
         }
         detectShell.call($,  navigator.userAgent);
     })(Zepto);
